@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ChocoBox — подарочные шоколадные наборы</title>
+  <style>
+    :root {
+      --bg: #f8f5f2;
+      --surface: #ffffff;
+      --surface-soft: #f3efe9;
+      --text: #2a211d;
+      --muted: #6d5f57;
+      --accent: #7a3e1d;
+      --accent-2: #c98b5b;
+      --dark: #2b1d17;
+      --border: #e7ddd4;
+      --shadow: 0 10px 30px rgba(55, 34, 22, 0.08);
+      --radius: 24px;
+      --max: 1180px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .container {
+      width: min(var(--max), calc(100% - 40px));
+      margin: 0 auto;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, #fff2d9 0%, #fffaf5 50%, #fde8e4 100%);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .hero::before,
+    .hero::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(60px);
+      opacity: 0.45;
+      pointer-events: none;
+    }
+
+    .hero::before {
+      width: 280px;
+      height: 280px;
+      background: #f2c879;
+      top: -80px;
+      left: -60px;
+    }
+
+    .hero::after {
+      width: 340px;
+      height: 340px;
+      background: #efb0a7;
+      top: 40px;
+      right: -80px;
+    }
+
+    .hero-inner {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 40px;
+      align-items: center;
+      padding: 84px 0;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 10px 16px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: rgba(255,255,255,0.82);
+      color: var(--muted);
+      font-size: 14px;
+      box-shadow: var(--shadow);
+      margin-bottom: 18px;
+    }
+
+    h1, h2, h3 {
+      margin: 0;
+      line-height: 1.15;
+    }
+
+    h1 {
+      font-size: clamp(40px, 6vw, 64px);
+      max-width: 760px;
+    }
+
+    .lead {
+      margin-top: 24px;
+      font-size: 19px;
+      color: var(--muted);
+      max-width: 760px;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 32px;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 14px 22px;
+      border-radius: 18px;
+      font-weight: bold;
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .btn-primary {
+      background: var(--dark);
+      color: #fff;
+      box-shadow: var(--shadow);
+    }
+
+    .btn-secondary {
+      background: #fff;
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .card-wide {
+      grid-column: 1 / -1;
+    }
+
+    .eyebrow {
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .stat-title {
+      font-size: 28px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    section {
+      padding: 78px 0;
+    }
+
+    .section-head {
+      max-width: 760px;
+      margin-bottom: 36px;
+    }
+
+    .section-head p {
+      margin: 16px 0 0;
+      color: var(--muted);
+      font-size: 18px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+    }
+
+    .value-list {
+      display: grid;
+      gap: 14px;
+      margin-top: 28px;
+    }
+
+    .value-item {
+      padding: 16px 18px;
+      border-radius: 18px;
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+    }
+
+    .dark-panel {
+      background: linear-gradient(135deg, #2f211b 0%, #483028 100%);
+      color: #fff;
+      border-radius: 30px;
+      padding: 32px;
+      box-shadow: 0 20px 40px rgba(24, 13, 9, 0.18);
+    }
+
+    .dark-panel .eyebrow,
+    .dark-panel p {
+      color: #eadfd8;
+    }
+
+    .season-list {
+      display: grid;
+      gap: 14px;
+      margin-top: 26px;
+    }
+
+    .season-item {
+      padding: 16px 18px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+
+    .timeline {
+      display: grid;
+      gap: 18px;
+    }
+
+    .timeline-year {
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      margin-bottom: 10px;
+    }
+
+    .footer-band {
+      background: var(--dark);
+      color: #fff;
+    }
+
+    .footer-box {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 28px;
+      padding: 32px;
+      border-radius: 30px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: 0 20px 40px rgba(10, 6, 4, 0.22);
+    }
+
+    .focus-box {
+      background: rgba(0,0,0,0.18);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 24px;
+      padding: 24px;
+    }
+
+    .focus-box ul {
+      margin: 16px 0 0;
+      padding-left: 18px;
+    }
+
+    .focus-box li {
+      margin-bottom: 10px;
+      color: #eee3de;
+    }
+
+    @media (max-width: 920px) {
+      .hero-inner,
+      .grid-3,
+      .grid-2,
+      .footer-box {
+        grid-template-columns: 1fr;
+      }
+
+      .stats {
+        grid-template-columns: 1fr;
+      }
+
+      section {
+        padding: 60px 0;
+      }
+
+      .hero-inner {
+        padding: 64px 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="container hero-inner">
+      <div>
+        <div class="badge">ChocoBox · шоколадные подарочные наборы</div>
+        <h1>Подарочные шоколадные наборы для бизнеса и покупателей по всей России</h1>
+        <p class="lead">
+          ChocoBox — небольшой производитель шоколадных наборов, который работает в двух каналах:
+          корпоративные заказы с ярко выраженным сезонным пиком и маркетплейсы с продажами круглый год.
+        </p>
+        <div class="actions">
+          <a class="btn btn-primary" href="#offers">Что мы предлагаем</a>
+          <a class="btn btn-secondary" href="#history">История компании</a>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="card">
+          <div class="eyebrow">География</div>
+          <div class="stat-title">Вся Россия</div>
+          <div>Производство находится в регионе, а продажи идут по всей стране.</div>
+        </div>
+        <div class="card">
+          <div class="eyebrow">Каналы</div>
+          <div class="stat-title">B2B + маркетплейсы</div>
+          <div>Корпоративные заказы создают сезонный пик, маркетплейсы дают стабильный поток продаж.</div>
+        </div>
+        <div class="card card-wide">
+          <div class="eyebrow">Производственная база</div>
+          <div class="stat-title">Собственное производство и новая глазировочная линия</div>
+          <div>В 2024 году ChocoBox усилил парк оборудования за счёт новой глазировочной линии, чтобы поддержать рост качества и производительности.</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section id="offers">
+      <div class="container">
+        <div class="section-head">
+          <h2>Что предлагает ChocoBox</h2>
+          <p>
+            Компания специализируется на шоколадных подарочных решениях, которые можно масштабировать под сезонный спрос,
+            корпоративные проекты и розничные продажи.
+          </p>
+        </div>
+
+        <div class="grid-3">
+          <article class="card">
+            <h3>Корпоративные подарочные наборы</h3>
+            <p>Разрабатываем шоколадные наборы для компаний: новогодние подарки, welcome-box, подарки для клиентов и партнёров, лимитированные серии под бренд заказчика.</p>
+          </article>
+          <article class="card">
+            <h3>Продажи через маркетплейсы</h3>
+            <p>Предлагаем готовые подарочные решения для покупателей по всей России: сезонные коллекции, универсальные подарки и наборы для праздников круглый год.</p>
+          </article>
+          <article class="card">
+            <h3>Производство и кастомизация</h3>
+            <p>Производим в регионе и отгружаем по всей стране. Подбираем формат набора, упаковку, состав и оформление под задачу клиента.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section style="background:#fff; border-top:1px solid var(--border); border-bottom:1px solid var(--border);">
+      <div class="container grid-2">
+        <div>
+          <div class="section-head">
+            <h2>Почему нас выбирают</h2>
+          </div>
+          <div class="value-list">
+            <div class="value-item">Качественное шоколадное сырьё и аккуратная сборка наборов</div>
+            <div class="value-item">Гибкость под B2B-заказы и сезонные пики спроса</div>
+            <div class="value-item">Поставка по всей России из собственного производства</div>
+            <div class="value-item">Внимание к упаковке, вкусу и визуальному впечатлению</div>
+          </div>
+        </div>
+
+        <div class="dark-panel">
+          <div class="eyebrow">Сезонная модель бизнеса</div>
+          <h2>Мы умеем работать с пиками спроса</h2>
+          <div class="season-list">
+            <div class="season-item">
+              <strong>Q1–Q2</strong><br />
+              Поддерживаем ровные продажи на маркетплейсах, тестируем новые наборы и обновляем ассортимент.
+            </div>
+            <div class="season-item">
+              <strong>Q3</strong><br />
+              Готовимся к высокому сезону: закупаем сырьё, упаковку и формируем запасы под будущий пик спроса.
+            </div>
+            <div class="season-item">
+              <strong>Q4</strong><br />
+              Главный сезон бизнеса: корпоративные подарки, праздничные отгрузки и максимальная загрузка производства.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="history">
+      <div class="container grid-2" style="grid-template-columns: 0.9fr 1.1fr;">
+        <div>
+          <div class="section-head">
+            <h2>История компании</h2>
+            <p>
+              История ChocoBox — это путь от компактного производителя к бренду, который уверенно сочетает
+              ремесленное ощущение продукта и системную производственную работу.
+            </p>
+          </div>
+        </div>
+
+        <div class="timeline">
+          <article class="card">
+            <div class="timeline-year">Старт</div>
+            <div>ChocoBox вырос из идеи делать шоколадные подарки, которые одинаково хорошо подходят и для корпоративных клиентов, и для розничного покупателя.</div>
+          </article>
+          <article class="card">
+            <div class="timeline-year">Рост</div>
+            <div>Компания выстроила две опоры бизнеса: корпоративные заказы с сильным сезонным спросом в четвёртом квартале и продажи на маркетплейсах круглый год.</div>
+          </article>
+          <article class="card">
+            <div class="timeline-year">2024</div>
+            <div>Для увеличения производительности и стабильности качества была приобретена новая глазировочная линия. Это усилило производственную базу перед дальнейшим ростом.</div>
+          </article>
+          <article class="card">
+            <div class="timeline-year">Сегодня</div>
+            <div>ChocoBox — это производитель подарочных шоколадных наборов с поставками по всей России, который сочетает промышленную дисциплину и внимание к деталям продукта.</div>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <section class="footer-band">
+    <div class="container" style="padding: 78px 0;">
+      <div class="footer-box">
+        <div>
+          <h2>ChocoBox сегодня</h2>
+          <p style="margin-top:18px; color:#eadfd8; font-size:18px; max-width:760px;">
+            Мы создаём подарочные шоколадные наборы для корпоративных клиентов и розничного рынка,
+            развиваем продажи на маркетплейсах и усиливаем производственную базу, чтобы расти устойчиво и качественно.
+          </p>
+        </div>
+        <div class="focus-box">
+          <div class="eyebrow">Фокус компании</div>
+          <ul>
+            <li>Надёжные поставки по всей России</li>
+            <li>Красивый и понятный подарочный продукт</li>
+            <li>Работа с корпоративным сезоном Q4</li>
+            <li>Развитие круглогодичных продаж</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+</body>
+</html>
